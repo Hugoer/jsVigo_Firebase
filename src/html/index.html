@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Document</title>
+	<script src="../default.js"></script>
+	<link rel="stylesheet" href="../default.css">
+</head>
+<body>
+	
+	<a class="menu" href="#" data-index="index">Inicio</a>
+	<a class="menu" href="#" data-index="datos">Datos</a>
+	<a class="menu" href="#" data-index="permissions">Permisos</a>
+	<a class="menu" href="#" data-index="geo">GEOJson</a>
+
+	<div id="index">
+
+		<div>
+			<h1 id="title" class="none"></h1>
+			
+			<button type="button" id="signout" class="none">Cerrar sesión</button>
+
+			<form action="" class="none" id="form">
+				<input type="text" id="user">
+				<input type="password" id="password">
+				<button type="button" id="login">Login</button>
+			</form>	
+
+			<button type="button" id="showInfo">Muestra nodo "Info"</button>			
+		</div>
+		
+		<div>
+			<label for="Nombre">Nombre</label>
+			<input type="text" id="Nombre">
+			<label for="Apellidos">Apellidos</label>
+			<input type="text" id="Apellidos">
+			<label for="Profesion">Profesion</label>
+			<input type="text" id="Profesion">		
+		</div>
+
+	</div>
+
+	<div id="datos">
+
+		<div>
+			<p>Guardamos todos los datos</p>
+			<input type="text" id="nombreSet">
+			<input type="text" id="apellidosSet">
+			<input type="text" id="profesionSet">
+
+			<button type="button" id="guardarDatos">Guardar objeto entero</button>			
+		</div>
+
+		<div>
+			<p>Actualizamos sólo un dato</p>
+			<label for="nombrePartial">Nombre</label>
+			<input type="text" id="nombrePartial">
+
+			<button type="button" id="guardarDatosParcial">Guardar sólo el nombre</button>
+		</div>
+
+		<div>
+			<p>Insertamos amigos</p>
+			<label for="nombrePush">Nombre</label>
+			<input type="text" id="nombrePush">
+			<label for="apellidosPush">Apellidos</label>
+			<input type="text" id="apellidosPush">
+
+			<button type="button" id="pushFriends">Creamos un amigo</button>			
+
+			<ul id="friends">
+				
+			</ul>
+
+		</div>
+
+		<div>
+			<p>Consultamos el nombre de un amigo</p>
+			<label for="keyGet">key</label>
+			<input type="text" id="keyGet">			
+			<label for="nombreGet">Nombre</label>
+			<input type="text" id="nombreGet" disabled>
+			<button type="button" id="getFriend">Consulta nombre de amigo</button>			
+		</div>
+
+		<div>
+			<p>Eliminamos un amigo</p>
+			<label for="keyDelete">key</label>
+			<input type="text" id="keyDelete">
+			<button type="button" id="delFriend">Eliminamos amigo</button>
+		</div>
+	</div>
+
+	
+	<div id="permissions">
+		<h1>permissions</h1>
+	</div>
+
+
+	<div id="geo">
+		<h1>geo</h1>
+	</div>
+
+</body>  
+</html>

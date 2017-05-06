@@ -1,0 +1,47 @@
+{
+  "name": "initialize_webproject",
+  "version": "0.0.1",
+  "authors": [
+    "Hugo Estévez Rocha"
+  ],
+  "description": "Bower file for creating the basic structure of a web project.",
+  "moduleType": [
+    "node"
+  ],
+  "keywords": [
+    "bower",
+    "gulp",
+    "npm"
+  ],
+  "license": "MIT",
+  "homepage": "www.hugoer.com",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "firebaseui": "^1.0.1"
+  },
+  "install": {
+    "path": {
+      "js": "src/js/vendor",
+      "scss": "src/scss/vendor/",
+      "css": "src/css/vendor",
+      "png": "src/img/vendor",
+      "gif": "src/img/vendor",
+      "eot": "src/fonts/vendor",
+      "svg": "src/fonts/vendor",
+      "ttf": "src/fonts/vendor",
+      "woff": "src/fonts/vendor",
+      "woff2": "src/fonts/vendor"
+    },
+    "sources": {
+      "firebaseui" : [
+        "bower_components/firebase/firebase.js"
+      ]
+    }
+  }
+}
