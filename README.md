@@ -1,6 +1,6 @@
 # Firebase 3
 
-Código de ejemplo para la charla de jsVigo sobre Firebase.
+Código de ejemplo para la charla de jsVigo sobre Firebase. La estructura de carpetas y ficheros no es estrictamente necesaria, se ha reutilizado otro repositorio para agilizar el desarrollo del código de ejemplo.
 
 # Presentación:
 
