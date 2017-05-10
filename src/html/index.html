@@ -9,9 +9,10 @@
 </head>
 <body>
 	
-	<a class="menu" href="#" data-index="index">Inicio</a>
-	<a class="menu" href="#" data-index="datos">Datos</a>
-	<a class="menu" href="#" data-index="permissions">Permisos</a>
+	<a class="menu" href="#" data-index="index">Inicio</a> - 
+	<a class="menu" href="#" data-index="datos">Datos</a> - 
+	<a class="menu" href="#" data-index="query">query</a> - 
+	<a class="menu" href="#" data-index="permissions">Permisos</a> - 
 	<a class="menu" href="#" data-index="geo">GEOJson</a>
 
 	<div id="index">
@@ -69,8 +70,8 @@
 
 			<button type="button" id="pushFriends">Creamos un amigo</button>			
 
+			<p>Listado de amigos:</p>
 			<ul id="friends">
-				
 			</ul>
 
 		</div>
@@ -93,6 +94,38 @@
 	</div>
 
 	
+	<div id="query">
+		<h1>Query</h1>
+		<button type="button" id="createRandom">Genera registros aleatorios</button>
+		
+		<br>
+		
+		<form id="randomForm" name="randomForm">
+			<input id="equalToFilter" type="radio" name="typeFilter" value="equalTo" checked><label for="equalToFilter">equalTo</label>
+			<input id="startAtFilter" type="radio" name="typeFilter" value="startAt"><label for="startAtFilter">startAt</label>
+			<input id="endAtFilter" type="radio" name="typeFilter" value="endAt"><label for="endAtFilter">endAt</label>
+			
+			<br>
+
+			<input id="integerFilter" type="radio" name="fieldFilter" value="integerFilter" checked> <label for="integerFilter">integer</label>
+			<input id="stringFilter" type="radio" name="fieldFilter" value="stringFilter"> <label for="stringFilter">string</label>
+			
+			<br>
+
+			<label for="integerFilterValue">integerFilterValue</label>
+			<input type="text" id="integerFilterValue">
+			<label for="stringFilterValue">stringFilterValue</label>
+			<input type="text" id="stringFilterValue">
+		</form>
+
+		<button type="button" id="showRandom">Muestra datos filtrados</button>
+
+		<p>Listado de datos devueltos:</p>
+		<ul id="randomData">
+			
+		</ul>
+	</div>
+
 	<div id="permissions">
 		<h1>permissions</h1>
 	</div>

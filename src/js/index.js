@@ -12,7 +12,7 @@ firebase.initializeApp(config);
 
 var jsVigoDatabase = firebase.database();
 
-
+//Index
 function doLogin(user,password){
 	firebase.auth().signInWithEmailAndPassword(user,password)
 	.then(function(snapshot){
@@ -98,13 +98,27 @@ function saveDataPartial(){
 	jsVigoDatabase.ref('Info').child('Nombre').set(_name);
 }
 
+//Datos
 function getFriends(){
-	jsVigoDatabase.ref('Friends').on('value', function(snapshot){
+/*	jsVigoDatabase.ref('Friends').on('value', function(snapshot){
 		snapshot.forEach(function(childSnapshot) {
 			_addFriendToView(childSnapshot.val(),childSnapshot.key);
 		});
+	});*/
+	jsVigoDatabase.ref('Friends').on('child_added', function(snapshot){
+		_addFriendToView(snapshot.val(),snapshot.key);
 	});
+
+	jsVigoDatabase.ref('Friends').on('child_removed', function(snapshot){
+		_removeFriendToView(snapshot.key);
+	});
+
+	jsVigoDatabase.ref('Friends').on('child_changed', function(snapshot){
+		console.log('El nodo con key: ' + snapshot.key + ' ahora tiene el valor: ' + JSON.stringify(snapshot.val()) );
+	});
+
 }
+
 
 function getFriend(key){
 	jsVigoDatabase.ref('Friends').child(key).child('nombre').once('value', function(snapshot){
@@ -122,8 +136,6 @@ function getFriend(key){
 
 function createFriend(){
 
-	document.getElementById('friends').innerHTML = '';
-
 	var _friend = {},
 		result = '';
 
@@ -140,7 +152,7 @@ function deleteFriend(){
 
 	var friendKey = document.getElementById('keyDelete').value;
 	if ( !!friendKey ){
-		document.getElementById('friends').innerHTML = '';
+		
 		jsVigoDatabase.ref('Friends').child(friendKey).remove()
 			.then(function() {
 				console.log('Amigo eliminado correctamente')
@@ -148,6 +160,7 @@ function deleteFriend(){
 			.catch(function(error) {
 				console.log('Remove failed: ' + error.message)
 			});
+		document.getElementById('keyDelete').value = '';
 	}
 }
 
@@ -155,9 +168,79 @@ function _addFriendToView(friend, key){
 	var friendText = friend.nombre + '  ' + friend.apellidos + ' (' + key + ')',
 		list = document.getElementById('friends');
 
-	var newLI = document.createElement('li');
-	newLI.appendChild(document.createTextNode(friendText));
-	list.appendChild(newLI);	
+	var newLi = document.createElement('li');
+	newLi.setAttribute('id',key);
+	newLi.appendChild(document.createTextNode(friendText));
+	list.appendChild(newLi);	
+}
+
+function _removeFriendToView(key){
+	var _friend = document.getElementById(key);
+	_friend.remove();
+}
+
+//Query
+function createRandomData(){
+	var _total = 1000,
+		_numberMaxRandom = 100;
+
+	var _objRandom = {
+		'name' : null,
+		'integerFilter' : null,
+		'stringFilter' : null
+	}
+	for (var i = 0; i < _total; i++) {
+		_objRandom.name = 'Name' + new Date().getTime();
+		_objRandom.integerFilter = Math.floor((Math.random() * _numberMaxRandom) + 1);
+		_objRandom.stringFilter = Math.random().toString(36).substring(7);
+		jsVigoDatabase.ref('random').push(_objRandom);
+	}
+}
+function _addRandomDataToView(data,key){
+	var randomObjText = 'Nombre: ' + data.name + '  ' + 'integerFilter: ' + data.integerFilter + '  ' + 'stringFilter: ' + data.stringFilter + ' (' + key + ')',
+		randomList = document.getElementById('randomData');
+
+	var liRandom = document.createElement('li');
+	liRandom.setAttribute('id',key);
+	liRandom.appendChild(document.createTextNode(randomObjText));
+	randomList.appendChild(liRandom);
+}
+
+function showRandomData(){
+	
+	document.getElementById('randomData').innerHTML = '';
+
+	var _typeFilter = document.randomForm.typeFilter.value,
+		_fieldFilter = document.randomForm.fieldFilter.value,
+		_valueFilter = (_fieldFilter === 'integerFilter') ? +document.getElementById('integerFilterValue').value : document.getElementById('stringFilterValue').value,
+		reference = {};
+
+	if ( _typeFilter !== 'equalTo' && _fieldFilter === 'stringFilter' ){
+		alert('Firebase no permite buscar por cadenas que comiencen/finalicen por...');
+	}else{
+		
+		switch (_typeFilter) {
+			case 'equalTo':
+				reference = jsVigoDatabase.ref('random/').orderByChild(_fieldFilter).equalTo(_valueFilter);
+				break;
+			case 'startAt':
+				reference = jsVigoDatabase.ref('random/').orderByChild(_fieldFilter).startAt(_valueFilter);
+				break;
+			case 'endAt':
+				reference = jsVigoDatabase.ref('random/').orderByChild(_fieldFilter).endAt(_valueFilter);
+				break;
+		}
+		
+		reference.once('value', function(snapshot){
+			snapshot.forEach(function(childSnapshot) {
+				_addRandomDataToView(childSnapshot.val(),childSnapshot.key);
+			});
+		}, function(err){	
+			console.error(err);
+		});
+
+	}
+
 }
 
 document.addEventListener('DOMContentLoaded', function(event) { 
@@ -246,4 +329,15 @@ document.addEventListener('DOMContentLoaded', function(event) {
 	});	
 
 	getFriends();
+
+
+	//Query
+	document.getElementById('createRandom').addEventListener('click', function(){
+		createRandomData();
+	});
+	document.getElementById('showRandom').addEventListener('click', function(){
+		showRandomData();
+	});	
+
+
 });
