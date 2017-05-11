@@ -189,13 +189,21 @@ function createRandomData(){
 		'integerFilter' : null,
 		'stringFilter' : null
 	}
+
 	for (var i = 0; i < _total; i++) {
 		_objRandom.name = 'Name' + new Date().getTime();
 		_objRandom.integerFilter = Math.floor((Math.random() * _numberMaxRandom) + 1);
 		_objRandom.stringFilter = Math.random().toString(36).substring(7);
-		jsVigoDatabase.ref('random').push(_objRandom);
+
+		jsVigoDatabase.ref('random').push(_objRandom, function(){
+			console.log(i + ' registros aleatorios creados.');
+		}).catch(function(err){
+			console.error(err);
+		});	
 	}
+
 }
+
 function _addRandomDataToView(data,key){
 	var randomObjText = 'Nombre: ' + data.name + '  ' + 'integerFilter: ' + data.integerFilter + '  ' + 'stringFilter: ' + data.stringFilter + ' (' + key + ')',
 		randomList = document.getElementById('randomData');
@@ -213,7 +221,8 @@ function showRandomData(){
 	var _typeFilter = document.randomForm.typeFilter.value,
 		_fieldFilter = document.randomForm.fieldFilter.value,
 		_valueFilter = (_fieldFilter === 'integerFilter') ? +document.getElementById('integerFilterValue').value : document.getElementById('stringFilterValue').value,
-		reference = {};
+		_reference = {},
+		_date = {};
 
 	if ( _typeFilter !== 'equalTo' && _fieldFilter === 'stringFilter' ){
 		alert('Firebase no permite buscar por cadenas que comiencen/finalicen por...');
@@ -221,24 +230,54 @@ function showRandomData(){
 		
 		switch (_typeFilter) {
 			case 'equalTo':
-				reference = jsVigoDatabase.ref('random/').orderByChild(_fieldFilter).equalTo(_valueFilter);
+				_reference = jsVigoDatabase.ref('random/').orderByChild(_fieldFilter).equalTo(_valueFilter);
+				console.log('Tipo de búsqueda: equalTo - Filtro: ' + _fieldFilter + ' - Valor: ' + _valueFilter );
 				break;
 			case 'startAt':
-				reference = jsVigoDatabase.ref('random/').orderByChild(_fieldFilter).startAt(_valueFilter);
+				_reference = jsVigoDatabase.ref('random/').orderByChild(_fieldFilter).startAt(_valueFilter);
+				console.log('Tipo de búsqueda: startAt - Filtro: ' + _fieldFilter + ' - Valor: ' + _valueFilter );
 				break;
 			case 'endAt':
-				reference = jsVigoDatabase.ref('random/').orderByChild(_fieldFilter).endAt(_valueFilter);
+				_reference = jsVigoDatabase.ref('random/').orderByChild(_fieldFilter).endAt(_valueFilter);
+				console.log('Tipo de búsqueda: endAt - Filtro: ' + _fieldFilter + ' - Valor: ' + _valueFilter );
 				break;
 		}
-		
-		reference.once('value', function(snapshot){
+
+		_date = new Date();
+		console.log('Comenzamos a realizar la búsqueda: ' + _date.getMinutes() + ':' + _date.getSeconds() + ':' + _date.getMilliseconds());
+		_reference.once('value', function(snapshot){
 			snapshot.forEach(function(childSnapshot) {
 				_addRandomDataToView(childSnapshot.val(),childSnapshot.key);
 			});
+			_date = new Date();
+			console.log('Finalizamos la búsqueda: ' + _date.getMinutes() + ':' + _date.getSeconds() + ':' + _date.getMilliseconds());			
 		}, function(err){	
 			console.error(err);
 		});
 
+	}
+
+}
+
+function _countData(){
+	jsVigoDatabase.ref('random/').once('value',function(snapshot){
+		console.log('Número de registros totales: ' + Object.keys(snapshot.val() || []).length);
+	});
+}
+
+function _getUserInfo(){
+	var _user = firebase.auth().currentUser;
+	if ( !!_user ){
+		document.getElementById('nouserinfo').classList.add('none');
+		document.getElementById('usercontainer').classList.remove('none');
+		
+		document.getElementById('useruid').innerHTML = 'useruid:' + _user.uid;
+		document.getElementById('useremail').innerHTML = 'useremail:' + _user.email;
+		document.getElementById('useremailverified').innerHTML = 'useremailverified:' + _user.emailVerified;
+		document.getElementById('userproviderinfo').innerHTML = 'userproviderinfo:' + JSON.stringify(_user.providerData[0]);
+	}else{
+		document.getElementById('nouserinfo').classList.remove('none');
+		document.getElementById('usercontainer').classList.add('none');
 	}
 
 }
@@ -303,6 +342,9 @@ document.addEventListener('DOMContentLoaded', function(event) {
 	  	document.getElementById('signout').classList.add('none');
 	  }
 
+		//Permission
+		_getUserInfo();
+
 	});
 
 	//Datos
@@ -339,5 +381,6 @@ document.addEventListener('DOMContentLoaded', function(event) {
 		showRandomData();
 	});	
 
+	_countData();
 
 });
