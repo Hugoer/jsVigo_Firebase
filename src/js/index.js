@@ -181,14 +181,14 @@ function _removeFriendToView(key){
 
 //Query
 function createRandomData(){
-	var _total = 1000,
-		_numberMaxRandom = 100;
 
+	var _total = 10000,
+		_numberMaxRandom = 100;
 	var _objRandom = {
 		'name' : null,
 		'integerFilter' : null,
 		'stringFilter' : null
-	}
+	};
 
 	for (var i = 0; i < _total; i++) {
 		_objRandom.name = 'Name' + new Date().getTime();
@@ -218,7 +218,8 @@ function showRandomData(){
 	
 	document.getElementById('randomData').innerHTML = '';
 
-	var _typeFilter = document.randomForm.typeFilter.value,
+	var _node = document.randomForm.performance.value,
+		_typeFilter = document.randomForm.typeFilter.value,
 		_fieldFilter = document.randomForm.fieldFilter.value,
 		_valueFilter = (_fieldFilter === 'integerFilter') ? +document.getElementById('integerFilterValue').value : document.getElementById('stringFilterValue').value,
 		_reference = {},
@@ -230,15 +231,15 @@ function showRandomData(){
 		
 		switch (_typeFilter) {
 			case 'equalTo':
-				_reference = jsVigoDatabase.ref('random/').orderByChild(_fieldFilter).equalTo(_valueFilter);
+				_reference = jsVigoDatabase.ref(_node).orderByChild(_fieldFilter).equalTo(_valueFilter);
 				console.log('Tipo de búsqueda: equalTo - Filtro: ' + _fieldFilter + ' - Valor: ' + _valueFilter );
 				break;
 			case 'startAt':
-				_reference = jsVigoDatabase.ref('random/').orderByChild(_fieldFilter).startAt(_valueFilter);
+				_reference = jsVigoDatabase.ref(_node).orderByChild(_fieldFilter).startAt(_valueFilter);
 				console.log('Tipo de búsqueda: startAt - Filtro: ' + _fieldFilter + ' - Valor: ' + _valueFilter );
 				break;
 			case 'endAt':
-				_reference = jsVigoDatabase.ref('random/').orderByChild(_fieldFilter).endAt(_valueFilter);
+				_reference = jsVigoDatabase.ref(_node).orderByChild(_fieldFilter).endAt(_valueFilter);
 				console.log('Tipo de búsqueda: endAt - Filtro: ' + _fieldFilter + ' - Valor: ' + _valueFilter );
 				break;
 		}
@@ -251,6 +252,7 @@ function showRandomData(){
 			});
 			_date = new Date();
 			console.log('Finalizamos la búsqueda: ' + _date.getMinutes() + ':' + _date.getSeconds() + ':' + _date.getMilliseconds());			
+			console.log('Resultado: ' + Object.keys(snapshot.val() || []).length);
 		}, function(err){	
 			console.error(err);
 		});

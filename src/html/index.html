@@ -96,11 +96,17 @@
 	
 	<div id="query">
 		<h1>Query</h1>
-		<button type="button" id="createRandom">Genera registros aleatorios</button>
-		
-		<br>
 		
 		<form id="randomForm" name="randomForm">
+			<button type="button" id="createRandom">Genera registros aleatorios</button>
+			
+			<br>
+				
+			<input id="lowCost" type="radio" name="performance" value="random" checked><label for="lowCost">Pocos datos</label>
+			<input id="highCost" type="radio" name="performance" value="highPerformance"><label for="highCost">3 millones de registros</label>
+
+			<br>
+
 			<input id="equalToFilter" type="radio" name="typeFilter" value="equalTo" checked><label for="equalToFilter">equalTo</label>
 			<input id="startAtFilter" type="radio" name="typeFilter" value="startAt"><label for="startAtFilter">startAt</label>
 			<input id="endAtFilter" type="radio" name="typeFilter" value="endAt"><label for="endAtFilter">endAt</label>
