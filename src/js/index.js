@@ -13,76 +13,76 @@ firebase.initializeApp(config);
 var jsVigoDatabase = firebase.database();
 
 //Index
-function doLogin(user,password){
-	firebase.auth().signInWithEmailAndPassword(user,password)
-	.then(function(snapshot){
-		console.log('Usuario logueado: ');
-		console.log(snapshot);
-	})
-	.catch(function(error) {
-	  // Handle Errors here.
-	  var errorCode = error.code;
-	  var errorMessage = error.message;
-	  // ...
-	  console.log([errorCode,errorMessage]);
-	});
+function doLogin(user, password) {
+	firebase.auth().signInWithEmailAndPassword(user, password)
+		.then(function (snapshot) {
+			console.log('Usuario logueado: ');
+			console.log(snapshot);
+		})
+		.catch(function (error) {
+			// Handle Errors here.
+			var errorCode = error.code;
+			var errorMessage = error.message;
+			// ...
+			console.log([errorCode, errorMessage]);
+		});
 }
 
-function doSignOut(){
-	firebase.auth().signOut().then(function() {
-	  	console.log('Hemos cerrado la sesión correctamente');
-		
+function doSignOut() {
+	firebase.auth().signOut().then(function () {
+		console.log('Hemos cerrado la sesión correctamente');
+
 		jsVigoDatabase.ref('text').off('value');
 		jsVigoDatabase.ref('Info').off('value');
 
-	}, function(error) {
-	  console.error(error);
-	});	
+	}, function (error) {
+		console.error(error);
+	});
 }
 
-function helloWorld(){
-	
-	jsVigoDatabase.ref('text').on('value', function(snapshot) {
+function helloWorld() {
+
+	jsVigoDatabase.ref('text').on('value', function (snapshot) {
 		document.getElementsByTagName('h1')[0].innerHTML = snapshot.val();
-	}, function(err){
+	}, function (err) {
 		console.error(err);
 	});
 
 }
 
-function showInfo(){
+function showInfo() {
 
-	jsVigoDatabase.ref('Info').on('value', function(snapshot) {
+	jsVigoDatabase.ref('Info').on('value', function (snapshot) {
 		var _info = snapshot.val();
 
-		if ( !!_info ){
+		if (!!_info) {
 			document.getElementById('Nombre').value = _info.Nombre;
 			document.getElementById('Apellidos').value = _info.Apellidos;
-			document.getElementById('Profesion').value = _info.Profesion;			
-		}else{
+			document.getElementById('Profesion').value = _info.Profesion;
+		} else {
 			console.log('No existe el nodo Info en firebase');
 		}
 
 
-	}, function(err){
+	}, function (err) {
 		console.error(err);
-	});	
+	});
 }
 
-function saveData(){
+function saveData() {
 
 	var infoObj = {},
 		_nombre = document.getElementById('nombreSet').value,
 		_apellidos = document.getElementById('apellidosSet').value,
 		_profesion = document.getElementById('profesionSet').value;
 
-	if ( !!_nombre ){
+	if (!!_nombre) {
 		infoObj.Nombre = _nombre;
 	}
-	if ( !!_apellidos ){
+	if (!!_apellidos) {
 		infoObj.Apellidos = _apellidos;
 	}
-	if ( !!_profesion ){
+	if (!!_profesion) {
 		infoObj.Profesion = _profesion;
 	}
 
@@ -91,7 +91,7 @@ function saveData(){
 	console.log('Vamos a reemplazar el objeto actual por este: ' + JSON.stringify(infoObj));
 }
 
-function saveDataPartial(){
+function saveDataPartial() {
 	var _name = document.getElementById('nombrePartial').value;
 
 	//jsVigoDatabase.ref('Info/Nombre').set(_name);
@@ -99,42 +99,42 @@ function saveDataPartial(){
 }
 
 //Datos
-function getFriends(){
-/*	jsVigoDatabase.ref('Friends').on('value', function(snapshot){
-		snapshot.forEach(function(childSnapshot) {
-			_addFriendToView(childSnapshot.val(),childSnapshot.key);
-		});
-	});*/
-	jsVigoDatabase.ref('Friends').on('child_added', function(snapshot){
-		_addFriendToView(snapshot.val(),snapshot.key);
+function getFriends() {
+	/*	jsVigoDatabase.ref('Friends').on('value', function(snapshot){
+			snapshot.forEach(function(childSnapshot) {
+				_addFriendToView(childSnapshot.val(),childSnapshot.key);
+			});
+		});*/
+	jsVigoDatabase.ref('Friends').on('child_added', function (snapshot) {
+		_addFriendToView(snapshot.val(), snapshot.key);
 	});
 
-	jsVigoDatabase.ref('Friends').on('child_removed', function(snapshot){
+	jsVigoDatabase.ref('Friends').on('child_removed', function (snapshot) {
 		_removeFriendToView(snapshot.key);
 	});
 
-	jsVigoDatabase.ref('Friends').on('child_changed', function(snapshot){
-		console.log('El nodo con key: ' + snapshot.key + ' ahora tiene el valor: ' + JSON.stringify(snapshot.val()) );
+	jsVigoDatabase.ref('Friends').on('child_changed', function (snapshot) {
+		console.log('El nodo con key: ' + snapshot.key + ' ahora tiene el valor: ' + JSON.stringify(snapshot.val()));
 	});
 
 }
 
 
-function getFriend(key){
-	jsVigoDatabase.ref('Friends').child(key).child('nombre').once('value', function(snapshot){
+function getFriend(key) {
+	jsVigoDatabase.ref('Friends').child(key).child('nombre').once('value', function (snapshot) {
 		var _name = snapshot.val();
-		if ( !_name ){
+		if (!_name) {
 			document.getElementById('nombreGet').value = 'NO EXISTE';
-		}else{
+		} else {
 			document.getElementById('nombreGet').value = _name;
 		}
-		
-	}, function(err){
+
+	}, function (err) {
 		console.error(err);
 	});
 }
 
-function createFriend(){
+function createFriend() {
 
 	var _friend = {},
 		result = '';
@@ -148,46 +148,46 @@ function createFriend(){
 
 }
 
-function deleteFriend(){
+function deleteFriend() {
 
 	var friendKey = document.getElementById('keyDelete').value;
-	if ( !!friendKey ){
-		
+	if (!!friendKey) {
+
 		jsVigoDatabase.ref('Friends').child(friendKey).remove()
-			.then(function() {
-				console.log('Amigo eliminado correctamente')
+			.then(function () {
+				console.log('Amigo eliminado correctamente');
 			})
-			.catch(function(error) {
-				console.log('Remove failed: ' + error.message)
+			.catch(function (error) {
+				console.log('Remove failed: ' + error.message);
 			});
 		document.getElementById('keyDelete').value = '';
 	}
 }
 
-function _addFriendToView(friend, key){
+function _addFriendToView(friend, key) {
 	var friendText = friend.nombre + '  ' + friend.apellidos + ' (' + key + ')',
 		list = document.getElementById('friends');
 
 	var newLi = document.createElement('li');
-	newLi.setAttribute('id',key);
+	newLi.setAttribute('id', key);
 	newLi.appendChild(document.createTextNode(friendText));
-	list.appendChild(newLi);	
+	list.appendChild(newLi);
 }
 
-function _removeFriendToView(key){
+function _removeFriendToView(key) {
 	var _friend = document.getElementById(key);
 	_friend.remove();
 }
 
 //Query
-function createRandomData(){
+function createRandomData() {
 
 	var _total = 10000,
 		_numberMaxRandom = 100;
 	var _objRandom = {
-		'name' : null,
-		'integerFilter' : null,
-		'stringFilter' : null
+		'name': null,
+		'integerFilter': null,
+		'stringFilter': null
 	};
 
 	for (var i = 0; i < _total; i++) {
@@ -195,27 +195,27 @@ function createRandomData(){
 		_objRandom.integerFilter = Math.floor((Math.random() * _numberMaxRandom) + 1);
 		_objRandom.stringFilter = Math.random().toString(36).substring(7);
 
-		jsVigoDatabase.ref('random').push(_objRandom, function(){
+		jsVigoDatabase.ref('random').push(_objRandom, function () {
 			console.log(i + ' registros aleatorios creados.');
-		}).catch(function(err){
+		}).catch(function (err) {
 			console.error(err);
-		});	
+		});
 	}
 
 }
 
-function _addRandomDataToView(data,key){
+function _addRandomDataToView(data, key) {
 	var randomObjText = 'Nombre: ' + data.name + '  ' + 'integerFilter: ' + data.integerFilter + '  ' + 'stringFilter: ' + data.stringFilter + ' (' + key + ')',
 		randomList = document.getElementById('randomData');
 
 	var liRandom = document.createElement('li');
-	liRandom.setAttribute('id',key);
+	liRandom.setAttribute('id', key);
 	liRandom.appendChild(document.createTextNode(randomObjText));
 	randomList.appendChild(liRandom);
 }
 
-function showRandomData(){
-	
+function showRandomData() {
+
 	document.getElementById('randomData').innerHTML = '';
 
 	var _node = document.randomForm.performance.value,
@@ -225,35 +225,35 @@ function showRandomData(){
 		_reference = {},
 		_date = {};
 
-	if ( _typeFilter !== 'equalTo' && _fieldFilter === 'stringFilter' ){
+	if (_typeFilter !== 'equalTo' && _fieldFilter === 'stringFilter') {
 		alert('Firebase no permite buscar por cadenas que comiencen/finalicen por...');
-	}else{
-		
+	} else {
+
 		switch (_typeFilter) {
 			case 'equalTo':
 				_reference = jsVigoDatabase.ref(_node).orderByChild(_fieldFilter).equalTo(_valueFilter);
-				console.log('Tipo de búsqueda: equalTo - Filtro: ' + _fieldFilter + ' - Valor: ' + _valueFilter );
+				console.log('Tipo de búsqueda: equalTo - Filtro: ' + _fieldFilter + ' - Valor: ' + _valueFilter);
 				break;
 			case 'startAt':
 				_reference = jsVigoDatabase.ref(_node).orderByChild(_fieldFilter).startAt(_valueFilter);
-				console.log('Tipo de búsqueda: startAt - Filtro: ' + _fieldFilter + ' - Valor: ' + _valueFilter );
+				console.log('Tipo de búsqueda: startAt - Filtro: ' + _fieldFilter + ' - Valor: ' + _valueFilter);
 				break;
 			case 'endAt':
 				_reference = jsVigoDatabase.ref(_node).orderByChild(_fieldFilter).endAt(_valueFilter);
-				console.log('Tipo de búsqueda: endAt - Filtro: ' + _fieldFilter + ' - Valor: ' + _valueFilter );
+				console.log('Tipo de búsqueda: endAt - Filtro: ' + _fieldFilter + ' - Valor: ' + _valueFilter);
 				break;
 		}
 
 		_date = new Date();
 		console.log('Comenzamos a realizar la búsqueda: ' + _date.getMinutes() + ':' + _date.getSeconds() + ':' + _date.getMilliseconds());
-		_reference.once('value', function(snapshot){
-			snapshot.forEach(function(childSnapshot) {
-				_addRandomDataToView(childSnapshot.val(),childSnapshot.key);
+		_reference.once('value', function (snapshot) {
+			snapshot.forEach(function (childSnapshot) {
+				_addRandomDataToView(childSnapshot.val(), childSnapshot.key);
 			});
 			_date = new Date();
-			console.log('Finalizamos la búsqueda: ' + _date.getMinutes() + ':' + _date.getSeconds() + ':' + _date.getMilliseconds());			
+			console.log('Finalizamos la búsqueda: ' + _date.getMinutes() + ':' + _date.getSeconds() + ':' + _date.getMilliseconds());
 			console.log('Resultado: ' + Object.keys(snapshot.val() || []).length);
-		}, function(err){	
+		}, function (err) {
 			console.error(err);
 		});
 
@@ -261,88 +261,88 @@ function showRandomData(){
 
 }
 
-function _countData(){
-	jsVigoDatabase.ref('random/').once('value',function(snapshot){
+function _countData() {
+	jsVigoDatabase.ref('random/').once('value', function (snapshot) {
 		console.log('Número de registros totales: ' + Object.keys(snapshot.val() || []).length);
 	});
 }
 
-function _getUserInfo(){
+function _getUserInfo() {
 	var _user = firebase.auth().currentUser;
-	if ( !!_user ){
+	if (!!_user) {
 		document.getElementById('nouserinfo').classList.add('none');
 		document.getElementById('usercontainer').classList.remove('none');
-		
+
 		document.getElementById('useruid').innerHTML = 'useruid:' + _user.uid;
 		document.getElementById('useremail').innerHTML = 'useremail:' + _user.email;
 		document.getElementById('useremailverified').innerHTML = 'useremailverified:' + _user.emailVerified;
 		document.getElementById('userproviderinfo').innerHTML = 'userproviderinfo:' + JSON.stringify(_user.providerData[0]);
-	}else{
+	} else {
 		document.getElementById('nouserinfo').classList.remove('none');
 		document.getElementById('usercontainer').classList.add('none');
 	}
 
 }
 
-document.addEventListener('DOMContentLoaded', function(event) { 
+document.addEventListener('DOMContentLoaded', function (event) {
 
 	//Ocultamos todos los divs
 	var menus = document.getElementsByClassName('menu');
-	function hideAll(){
+	function hideAll() {
 		for (var i = 0; i < menus.length; i++) {
 			document.getElementById(menus[i].getAttribute('data-index')).classList.add('none');
-		}		
+		}
 	}
 	hideAll();
 	for (var i = 0; i < menus.length; i++) {
-		menus[i].addEventListener('click',function(){
+		menus[i].addEventListener('click', function () {
 			hideAll();
 			document.getElementById(this.getAttribute('data-index')).classList.remove('none');
-		})
+		});
 	}
 	//Mostramos el index
 	document.getElementById('index').classList.remove('none');
 
 
 	//Index
-	document.getElementById('login').addEventListener('click',function(){
-		
+	document.getElementById('login').addEventListener('click', function () {
+
 		var _user = document.getElementById('user').value,
 			_pass = document.getElementById('password').value;
 
-		if ( !!_user && !!_pass){
-			doLogin(_user,_pass);
-		}else{
+		if (!!_user && !!_pass) {
+			doLogin(_user, _pass);
+		} else {
 			alert('Debe introducir usuario y password');
 		}
 
 	});
 
-	document.getElementById('signout').addEventListener('click',function(){
+	document.getElementById('signout').addEventListener('click', function () {
 		doSignOut();
 	});
 
-	document.getElementById('showInfo').addEventListener('click',function(){
+	document.getElementById('showInfo').addEventListener('click', function () {
 		showInfo();
 	});
-	
 
 
-	firebase.auth().onAuthStateChanged(function(user) {
-	  
-	  if (user) {
-	  	
-	  	document.getElementById('title').classList.remove('none');
-	  	document.getElementById('signout').classList.remove('none');
-	  	document.getElementById('form').classList.add('none');
 
-	  	helloWorld();
+	firebase.auth().onAuthStateChanged(function (user) {
 
-	  } else {
-	  	document.getElementById('form').classList.remove('none');
-	  	document.getElementById('title').classList.add('none');
-	  	document.getElementById('signout').classList.add('none');
-	  }
+		if (user) {
+
+			document.getElementById('title').classList.remove('none');
+			document.getElementById('signout').classList.remove('none');
+			document.getElementById('form').classList.add('none');
+
+			helloWorld();
+
+		} else {
+			document.getElementById('form').classList.remove('none');
+			document.getElementById('title').classList.add('none');
+			document.getElementById('signout').classList.add('none');
+		}
 
 		//Permission
 		_getUserInfo();
@@ -350,38 +350,38 @@ document.addEventListener('DOMContentLoaded', function(event) {
 	});
 
 	//Datos
-	document.getElementById('guardarDatos').addEventListener('click',function(){
+	document.getElementById('guardarDatos').addEventListener('click', function () {
 		saveData();
 	});
-	document.getElementById('guardarDatosParcial').addEventListener('click',function(){
+	document.getElementById('guardarDatosParcial').addEventListener('click', function () {
 		saveDataPartial();
 	});
 
-	document.getElementById('pushFriends').addEventListener('click',function(){
+	document.getElementById('pushFriends').addEventListener('click', function () {
 		createFriend();
 	});
 
-	document.getElementById('getFriend').addEventListener('click',function(){
+	document.getElementById('getFriend').addEventListener('click', function () {
 		var _key = document.getElementById('keyGet').value;
-		if ( !!_key ){
+		if (!!_key) {
 			getFriend(_key);
 		}
 	});
 
-	document.getElementById('delFriend').addEventListener('click',function(){
+	document.getElementById('delFriend').addEventListener('click', function () {
 		deleteFriend();
-	});	
+	});
 
 	getFriends();
 
 
 	//Query
-	document.getElementById('createRandom').addEventListener('click', function(){
+	document.getElementById('createRandom').addEventListener('click', function () {
 		createRandomData();
 	});
-	document.getElementById('showRandom').addEventListener('click', function(){
+	document.getElementById('showRandom').addEventListener('click', function () {
 		showRandomData();
-	});	
+	});
 
 	_countData();
 
