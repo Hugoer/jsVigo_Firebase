@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,37 +8,41 @@
 	<script src="../default.js"></script>
 	<link rel="stylesheet" href="../default.css">
 </head>
+
 <body>
-	
-	<a class="menu" href="#" data-index="index">Inicio</a> - 
-	<a class="menu" href="#" data-index="datos">Datos</a> - 
-	<a class="menu" href="#" data-index="query">query</a> - 
-	<a class="menu" href="#" data-index="permissions">Permisos</a> - 
-	<a class="menu" href="#" data-index="geo">GEOJson</a>
+
+	<a class="menu" href="#" data-index="index">Inicio</a> -
+	<a class="menu" href="#" data-index="datos">Datos</a> -
+	<a class="menu" href="#" data-index="query">query</a> -
+	<a class="menu" href="#" data-index="permissions">Permisos</a> -
+	<a class="menu" href="#" data-index="geo">GEOJson</a> -
+	<a class="menu" href="#" data-index="storage">Storage</a>
+
+	<p id="mailLogged"></p>
 
 	<div id="index">
 
 		<div>
 			<h1 id="title" class="none"></h1>
-			
+
 			<button type="button" id="signout" class="none">Cerrar sesión</button>
 
 			<form action="" class="none" id="form">
 				<input type="text" id="user">
 				<input type="password" id="password">
 				<button type="button" id="login">Login</button>
-			</form>	
+			</form>
 
-			<button type="button" id="showInfo">Muestra nodo "Info"</button>			
+			<button type="button" id="showInfo">Muestra nodo "Info"</button>
 		</div>
-		
+
 		<div>
 			<label for="Nombre">Nombre</label>
 			<input type="text" id="Nombre">
 			<label for="Apellidos">Apellidos</label>
 			<input type="text" id="Apellidos">
 			<label for="Profesion">Profesion</label>
-			<input type="text" id="Profesion">		
+			<input type="text" id="Profesion">
 		</div>
 
 	</div>
@@ -50,7 +55,7 @@
 			<input type="text" id="apellidosSet">
 			<input type="text" id="profesionSet">
 
-			<button type="button" id="guardarDatos">Guardar objeto entero</button>			
+			<button type="button" id="guardarDatos">Guardar objeto entero</button>
 		</div>
 
 		<div>
@@ -68,7 +73,7 @@
 			<label for="apellidosPush">Apellidos</label>
 			<input type="text" id="apellidosPush">
 
-			<button type="button" id="pushFriends">Creamos un amigo</button>			
+			<button type="button" id="pushFriends">Creamos un amigo</button>
 
 			<p>Listado de amigos:</p>
 			<ul id="friends">
@@ -79,10 +84,10 @@
 		<div>
 			<p>Consultamos el nombre de un amigo</p>
 			<label for="keyGet">key</label>
-			<input type="text" id="keyGet">			
+			<input type="text" id="keyGet">
 			<label for="nombreGet">Nombre</label>
 			<input type="text" id="nombreGet" disabled>
-			<button type="button" id="getFriend">Consulta nombre de amigo</button>			
+			<button type="button" id="getFriend">Consulta nombre de amigo</button>
 		</div>
 
 		<div>
@@ -93,15 +98,15 @@
 		</div>
 	</div>
 
-	
+
 	<div id="query">
 		<h1>Query</h1>
-		
+
 		<form id="randomForm" name="randomForm">
 			<button type="button" id="createRandom">Genera registros aleatorios</button>
-			
+
 			<br>
-				
+
 			<input id="lowCost" type="radio" name="performance" value="random" checked><label for="lowCost">Pocos datos</label>
 			<input id="highCost" type="radio" name="performance" value="highPerformance"><label for="highCost">3 millones de registros</label>
 
@@ -110,12 +115,12 @@
 			<input id="equalToFilter" type="radio" name="typeFilter" value="equalTo" checked><label for="equalToFilter">equalTo</label>
 			<input id="startAtFilter" type="radio" name="typeFilter" value="startAt"><label for="startAtFilter">startAt</label>
 			<input id="endAtFilter" type="radio" name="typeFilter" value="endAt"><label for="endAtFilter">endAt</label>
-			
+
 			<br>
 
 			<input id="integerFilter" type="radio" name="fieldFilter" value="integerFilter" checked> <label for="integerFilter">integer</label>
 			<input id="stringFilter" type="radio" name="fieldFilter" value="stringFilter"> <label for="stringFilter">string</label>
-			
+
 			<br>
 
 			<label for="integerFilterValue">integerFilterValue</label>
@@ -128,14 +133,14 @@
 
 		<p>Listado de datos devueltos:</p>
 		<ul id="randomData">
-			
+
 		</ul>
 	</div>
 
 	<div id="permissions">
-		
+
 		<h1>permissions</h1>
-		
+
 		<p id="nouserinfo" class="none">No está logueado ningún usuario</p>
 
 		<div id="usercontainer">
@@ -152,5 +157,29 @@
 		<h1>geo</h1>
 	</div>
 
-</body>  
+	<div id="storage">
+		<h1>storage</h1>
+
+		<form id="storageForm" name="storageForm">
+			<br>
+
+			<input id="profileBucket" type="radio" name="bucket" value="profile" checked><label for="profileBucket">Nodo "profile"</label>
+			<input id="otherBucket" type="radio" name="bucket" value="other"><label for="otherBucket">Nodo "other"</label>
+
+			<br>
+
+			<input type="file" id="inputStorage" name="pic" accept="image/*">
+
+			<button type="button" id="storageBtn">Añade imagen</button>
+		</form>
+
+		<br>
+
+		<p id="bucketUrlImage"></p>
+		<p id="showUrlImage"></p>
+		<button type="button" id="getDownloadURL">Obtener referencia desde una imagen</button>
+
+	</div>
+</body>
+
 </html>

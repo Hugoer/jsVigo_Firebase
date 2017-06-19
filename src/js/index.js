@@ -10,7 +10,8 @@ var config = {
 
 firebase.initializeApp(config);
 
-var jsVigoDatabase = firebase.database();
+var jsVigoDatabase = firebase.database(),
+	jsVigoStorage = firebase.storage().ref();
 
 //Index
 function doLogin(user, password) {
@@ -284,6 +285,53 @@ function _getUserInfo() {
 
 }
 
+function _checkUserInfo() {
+	jsVigoDatabase.ref('users').child('NGlSK65LqVRqq2JJxYsJYtnflc73').once('value', function (snap) {
+		console.log('Como propietario del nodo "user/$uid" puedo leer los datos: ' + JSON.stringify(snap.val()));
+	});
+
+	jsVigoDatabase.ref('users').child('PROelkoTy5hx0QwWsgrOiBjqTUE3').once('value', function (snap) {
+		console.log('Como propietario del nodo "user/$uid" puedo leer los datos: ' + JSON.stringify(snap.val()));
+	});
+}
+
+function uploadFile(nodeReference) {
+	var file = document.getElementById('inputStorage').files[0];
+	var _bucket = nodeReference + '/' + file.name;
+	var uploadTask = jsVigoStorage.child(_bucket).put(file);
+
+	uploadTask.on('state_changed', function (snapshot) {
+
+	}, function (error) {
+		console.error(error);
+	}, function () {
+		document.getElementById('bucketUrlImage').innerHTML = _bucket;
+		var downloadURL = uploadTask.snapshot.downloadURL;
+		console.log('Se ha añadido correctamente la imagen con la siguiente URL: ' + downloadURL);
+	});
+
+	uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
+		function (snapshot) {
+			// Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+			var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+			console.log('Upload is ' + progress + '% done');
+			switch (snapshot.state) {
+				case firebase.storage.TaskState.PAUSED: // or 'paused'
+					console.log('Upload is paused');
+					break;
+				case firebase.storage.TaskState.RUNNING: // or 'running'
+					console.log('Upload is running');
+					break;
+			}
+		});
+}
+
+function getDownloadURL(bucket) {
+	jsVigoStorage.child(bucket).getDownloadURL().then(function (dataUrl) {
+		document.getElementById('showUrlImage').innerHTML = dataUrl;
+	});
+}
+
 document.addEventListener('DOMContentLoaded', function (event) {
 
 	//Ocultamos todos los divs
@@ -296,8 +344,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	hideAll();
 	for (var i = 0; i < menus.length; i++) {
 		menus[i].addEventListener('click', function () {
+			var _id = this.getAttribute('data-index');
 			hideAll();
-			document.getElementById(this.getAttribute('data-index')).classList.remove('none');
+			document.getElementById(_id).classList.remove('none');
 		});
 	}
 	//Mostramos el index
@@ -326,7 +375,21 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		showInfo();
 	});
 
+	document.getElementById('storageBtn').addEventListener('click', function () {
+		console.log(document.getElementById('inputStorage'));
+		var _node = document.storageForm.bucket.value;
+		uploadFile(_node);
+	});
 
+	document.getElementById('getDownloadURL').addEventListener('click', function () {
+		var _bucket = document.getElementById('bucketUrlImage').innerHTML;
+		if (!!_bucket) {
+			getDownloadURL(_bucket);
+		} else {
+			console.log('No se ha seleccionado ninguna imagen. Súbela y luego podrás consultar su URL');
+		}
+
+	});
 
 	firebase.auth().onAuthStateChanged(function (user) {
 
@@ -335,7 +398,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 			document.getElementById('title').classList.remove('none');
 			document.getElementById('signout').classList.remove('none');
 			document.getElementById('form').classList.add('none');
-
+			document.getElementById('mailLogged').innerHTML = user.email;
 			helloWorld();
 
 		} else {
@@ -374,7 +437,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 	getFriends();
 
-
 	//Query
 	document.getElementById('createRandom').addEventListener('click', function () {
 		createRandomData();
@@ -384,5 +446,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	});
 
 	_countData();
+
+	//Permissions
+	_checkUserInfo();
 
 });
